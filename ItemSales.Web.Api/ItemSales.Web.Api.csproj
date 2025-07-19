@@ -12,4 +12,19 @@
       </Content>
     </ItemGroup>
 
+    <ItemGroup>
+      <PackageReference Include="Asp.Versioning.Mvc.ApiExplorer" />
+      <PackageReference Include="FluentValidation.DependencyInjectionExtensions" />
+      <PackageReference Include="NLog.Extensions.Logging" />
+      <PackageReference Include="NLog.Schema" />
+      <PackageReference Include="NLog.Targets.ConcurrentFile" />
+      <PackageReference Include="NLog.Web.AspNetCore" />
+      <PackageReference Include="Swashbuckle.AspNetCore" />
+      <PackageReference Include="Swashbuckle.AspNetCore.SwaggerUI" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\ItemSales.Inventory\ItemSales.Inventory.csproj" />
+    </ItemGroup>
+
 </Project>

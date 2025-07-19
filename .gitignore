@@ -4,6 +4,7 @@ appsettings.Development.json
 *.*~
 project.lock.json
 .DS_Store
+*.xsd
 *.pyc
 nupkg/
 

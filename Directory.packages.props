@@ -1,14 +1,21 @@
 <Project>
-    <PropertyGroup>
-        <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
-    </PropertyGroup>
-    <ItemGroup>
-        <PackageVersion Include="Microsoft.AspNetCore.Components.WebAssembly" Version="8.0.11"/>
-        <PackageVersion Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="8.0.11"/>
-        
-        <!-- Testing Libraries -->
-        <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="17.8.0"/>
-        <PackageVersion Include="xunit" Version="2.5.3"/>
-        <PackageVersion Include="xunit.runner.visualstudio" Version="2.5.3"/>
-    </ItemGroup>
+  <PropertyGroup>
+    <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageVersion Include="Asp.Versioning.Mvc.ApiExplorer" Version="8.1.0" />
+    <PackageVersion Include="FluentValidation.DependencyInjectionExtensions" Version="12.0.0" />
+    <PackageVersion Include="Microsoft.AspNetCore.Components.WebAssembly" Version="8.0.11" />
+    <PackageVersion Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="8.0.11" />
+    <!-- Testing Libraries -->
+    <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="17.8.0" />
+    <PackageVersion Include="NLog.Extensions.Logging" Version="6.0.1" />
+    <PackageVersion Include="NLog.Schema" Version="6.0.1" />
+    <PackageVersion Include="NLog.Targets.ConcurrentFile" Version="6.0.1" />
+    <PackageVersion Include="NLog.Web.AspNetCore" Version="6.0.1" />
+    <PackageVersion Include="Swashbuckle.AspNetCore" Version="9.0.3" />
+    <PackageVersion Include="Swashbuckle.AspNetCore.SwaggerUI" Version="9.0.3" />
+    <PackageVersion Include="xunit" Version="2.5.3" />
+    <PackageVersion Include="xunit.runner.visualstudio" Version="2.5.3" />
+  </ItemGroup>
 </Project>
