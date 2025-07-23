@@ -1,3 +1,33 @@
-@page "Inventory/Create"
+@page "/Inventory/Create"
 
 <h3>Create</h3>
+@if(Model is null)
+{
+    return;
+}
+<EditForm Model="Model" OnValidSubmit="Submit">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+    
+    <div class="form-group mb-3">
+        
+        <label for="sku">Sku:</label>
+        <InputText id="sku" class="form-control" @bind-Value="Model.Sku"/>
+        <ValidationMessage For="@(() => Model.Sku)"/>
+    </div>
+    
+    <div class="form-group mb-3">
+        <label for="description">Description:</label>
+        <InputText id="description" class="form-control" @bind-Value="Model.Description" />
+        <ValidationMessage For="@(() => Model.Description)" />
+    </div>
+    
+    <div class="form-group mb-3">
+        <label for="cost">Description:</label>
+        <InputNumber id="cost" class="form-control" @bind-Value="Model.Cost" />
+        <ValidationMessage For="@(() => Model.Cost)" />
+    </div>
+    
+    <button type="submit" class="btn btn-primary">Create Item</button>
+    
+</EditForm>

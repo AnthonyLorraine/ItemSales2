@@ -1,0 +1,14 @@
+﻿@page "/Inventory/Detail/{itemId:int}"
+<h3>Detail</h3>
+
+<div>
+    @InventoryItem.Sku
+</div>
+<div>
+    @InventoryItem.Description
+</div>
+@foreach (var price in InventoryItem.Prices)
+{
+    <div>@price.Cost</div>
+    <div>@price.LastUpdated</div>
+}

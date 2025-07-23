@@ -31,4 +31,15 @@ public class InventoryService : IInventoryService
 
         return await Task.FromResult(model.ToDto());
     }
+
+    public async Task<InventoryItemDto> GetAsync(int itemId, CancellationToken cancellationToken)
+    {
+        var dto = new CreateInventoryItemDto()
+        {
+            Sku = "DetailView",
+            Description = "DetailViewDescription",
+            Cost = 1.2m
+        };
+        return await CreateAsync(dto, cancellationToken);
+    }
 }

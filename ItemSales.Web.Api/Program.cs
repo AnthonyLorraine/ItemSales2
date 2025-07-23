@@ -10,6 +10,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Logging.ClearProviders();
 builder.UseNLog();
 builder.Services.AddMemoryCache();
+builder.Services.AddCors();
 builder.Services.AddSingleton<ApplicationDetails>();
 builder.Services.AddEndpoints(Assembly.GetExecutingAssembly());
 builder.Services.AddEndpointsApiExplorer();
@@ -32,6 +33,12 @@ if (!app.Environment.IsProduction())
 app.UseExceptionHandler();
 app.UseStatusCodePages();
 app.UseMiddleware<ValidationMappingMiddleware>();
+app.UseCors(o =>
+{
+    o.AllowAnyOrigin();
+    o.AllowAnyHeader();
+    o.AllowAnyMethod();
+});
 app.UseHttpsRedirection();
 app.ConfigureEndpointRoutes();
 app.Run();
