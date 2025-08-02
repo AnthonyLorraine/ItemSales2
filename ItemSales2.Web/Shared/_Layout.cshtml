@@ -1,0 +1,38 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <script src="https://cdn.jsdelivr.net/npm/@@tailwindcss/browser@4"></script>
+    <title>@ViewData["Title"] - Item Sales</title>
+    </head>
+<body class="flex flex-col min-h-screen bg-slate-300">
+<header>
+    <nav class="bg-white shadow-lg">
+        <div class="container mx-auto px-4 flex items-center justify-between py-3">
+            <a class="text-xl font-semibold text-gray-800 me-3" asp-area="" asp-controller="Home" asp-action="Index">Item Sales</a>
+
+            <button class="sm:hidden text-gray-500 hover:text-gray-700 focus:outline-none" type="button" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
+            </button>
+
+            <div id="navbarSupportedContent" class="hidden sm:flex flex-grow justify-between items-center">
+                <ul class="flex-grow flex gap-4 mt-2 sm:mt-0">
+                    <li>
+                        <a class="text-gray-700 hover:text-gray-900" href="@Url.ActionLink("Index", "SalesOrder")">Sales</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+</header>
+<div class="container flex-grow">
+    <main role="main">
+        @RenderBody()
+    </main>
+</div>
+<script src="~/js/site.js" asp-append-version="true"></script>
+<script src="https://unpkg.com/petite-vue"></script>
+@await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

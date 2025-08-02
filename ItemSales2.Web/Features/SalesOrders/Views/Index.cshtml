@@ -1,0 +1,304 @@
+﻿@{
+    Layout = "/Shared/_Layout.cshtml";
+    ViewData["Title"] = "Sales Order";
+}
+
+<div id="SalesOrderApp" class="p-6 bg-white-50">
+
+    <h1 class="text-3xl font-bold text-gray-800 mb-6">Create Sales Order</h1>
+
+    <p v-if="statusMessage !== ''" class="fixed top-4 right-4 z-50 mb-4 p-3 rounded-md border border-green-400 bg-green-100 text-sm text-green-700 font-medium transition-opacity duration-300">
+        {{ statusMessage }}
+    </p>
+
+    <div class="bg-white shadow-md rounded-lg p-6 mb-6" v-if="!salesOrderId">
+        <h2 class="text-2xl font-semibold text-gray-700 mb-4">1. Select Customer</h2>
+        <div class="flex flex-col md:flex-row md:items-center gap-4 relative">
+            <label for="customer-search" class="text-gray-600">Customer:</label>
+            <input 
+                id="customer-search"
+                type="text"
+                v-model="customerSearchQuery"
+                v-on:focus="showCustomerSuggestions = true"
+                v-on:blur="hideCustomerSuggestions()"
+                :input="searchCustomers()"
+                class="flex-grow p-2 border rounded-md focus:ring-blue-500 focus:border-blue-500"
+                placeholder="Search for a customer..."
+            >
+            <ul v-show="showCustomerSuggestions" class="absolute z-10 top-full mt-1 w-full bg-white border border-gray-300 rounded-md shadow-lg max-h-60 overflow-y-auto">
+                <li v-for="customer in customers" 
+                    v-on:mousedown="selectCustomer(customer)" 
+                    class="p-2 cursor-pointer hover:bg-blue-100"
+                >
+                    {{ customer.companyName }} ({{ customer.givenName }} {{ customer.surname }})
+                </li>
+                <li v-if="customers.length === 0" class="p-2 text-gray-500">No customers found.</li>
+            </ul>
+            <button 
+                v-on:click="createSalesOrder" 
+                :disabled="!selectedCustomer || isCreatingOrder" 
+                class="bg-blue-600 text-white px-6 py-2 rounded-md hover:bg-blue-700 disabled:opacity-50"
+            >
+                <span v-if="isCreatingOrder">Creating...</span>
+                <span v-else>Create Sales Order</span>
+            </button>
+        </div>
+    </div>
+
+    <div v-if="salesOrderId">
+        <div class="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
+            <h2 class="text-xl font-medium text-blue-800">Sales Order #{{ salesOrderId }}</h2>
+            <p class="text-blue-700">Customer: <span class="font-semibold">{{ selectedCustomer.companyName }}</span></p>
+        </div>
+
+        <div class="bg-white shadow-md rounded-lg overflow-hidden mb-6">
+            <h2 class="text-2xl font-semibold text-gray-700 p-6 border-b">Order Summary</h2>
+            <table class="min-w-full divide-y divide-gray-200">
+                <thead class="bg-gray-50">
+                <tr>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Item</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Quantity</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Price</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Subtotal</th>
+                    <th class="px-6 py-3"></th>
+                </tr>
+                </thead>
+                <tbody class="bg-white divide-y divide-gray-200">
+                <tr v-for="item in orderItems" :key="item.orderItemId">
+                    <td class="px-6 py-4 whitespace-nowrap">{{ item.description }}</td>
+                    <td class="px-6 py-4 whitespace-nowrap">{{ item.quantity }}</td>
+                    <td class="px-6 py-4 whitespace-nowrap">${{ item.price.toFixed(2) }}</td>
+                    <td class="px-6 py-4 whitespace-nowrap">${{ (item.quantity * item.price).toFixed(2) }}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                        <button v-on:click="removeOrderItem(item.orderItemId)" class="text-red-600 hover:text-red-900">Remove</button>
+                    </td>
+                </tr>
+                <tr v-if="orderItems.length === 0">
+                    <td colspan="5" class="px-6 py-4 text-center text-gray-500">No items added yet.</td>
+                </tr>
+                </tbody>
+                <tfoot v-if="orderItems.length > 0">
+                    <tr class="bg-gray-50">
+                        <td colspan="3" class="px-6 py-4 text-right font-bold text-gray-700">Total:</td>
+                        <td colspan="2" class="px-6 py-4 font-bold text-lg text-gray-800">${{ total.toFixed(2) }}</td>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+
+        <div class="bg-white shadow-md rounded-lg p-6">
+            <h2 class="text-2xl font-semibold text-gray-700 mb-4">Add Order Item</h2>
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
+                <div class="relative">
+                    <label for="item-search" class="block text-gray-600">Item</label>
+                    <input 
+                        id="item-search"
+                        type="text" 
+                        v-model="itemSearchQuery" 
+                        v-on:focus="showItemSuggestions = true"
+                        v-on:blur="hideItemSuggestions()"
+                        v-on:input="searchItems()"
+                        class="w-full p-2 border rounded-md focus:ring-blue-500 focus:border-blue-500"
+                        :placeholder="selectedItem ? selectedItem.description : 'Search for an item...'"
+                    >
+                    <ul v-show="showItemSuggestions" class="absolute z-10 top-full mt-1 w-full bg-white border border-gray-300 rounded-md shadow-lg max-h-60 overflow-y-auto">
+                        <li v-for="item in items" 
+                            v-on:mousedown="selectItem(item)" 
+                            class="p-2 cursor-pointer hover:bg-blue-100"
+                        >
+                            {{ item.description }} ({{ item.sku }})
+                        </li>
+                        <li v-if="items.length === 0" class="p-2 text-gray-500">No items found.</li>
+                    </ul>
+                </div>
+                <div>
+                    <label for="quantity" class="block text-gray-600">Quantity</label>
+                    <input type="number" id="quantity" v-model.number="newItem.quantity" min="1" class="w-full p-2 border rounded-md focus:ring-blue-500 focus:border-blue-500">
+                </div>
+                <div>
+                    <label for="price" class="block text-gray-600">Price ($)</label>
+                    <input type="number" id="price" v-model.number="newItem.price" min="0.01" step="0.01" class="w-full p-2 border rounded-md focus:ring-blue-500 focus:border-blue-500">
+                </div>
+                <div class="md:col-span-1">
+                    <button v-on:click="addOrderItem" :disabled="!selectedItem || newItem.quantity <= 0 || newItem.price <= 0" class="w-full bg-green-600 text-white px-6 py-2 rounded-md hover:bg-green-700 disabled:opacity-50">
+                        Add Item
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts
+{
+    <script>
+        const createSalesOrderEndpoint = `@Html.Raw(Url.ActionLink("Create", "SalesOrder"))`;
+        const searchCustomersEndpoint = `@Html.Raw(Url.ActionLink("SearchCustomers", "SalesOrder"))`
+        const getSalesOrderEndpoint = `@Html.Raw(Url.Action("GetSalesOrder", "SalesOrder"))`;
+        const addOrderItemEndpoint = `@Html.Raw(Url.Action("AddOrderItem", "SalesOrder"))`;
+        const removeOrderItemEndpoint = `@Html.Raw(Url.Action("RemoveOrderItem", "SalesOrder"))`;
+        const searchItemEndpoint = `@Html.Raw(Url.Action("SearchItems", "SalesOrder"))`;
+        // TODO
+        // Pricing calculation on server
+        // Add line items as one row, not separate box
+        // Include salesOrder in the dto for removing item, to ensure it relates to this order.
+        // SalesOrder status, to prevent items being added or removed from finalised orders.
+        // price matrix for sales items
+        // customer pricing level
+        
+        PetiteVue.createApp({
+            customers: [],
+            items: [],
+
+            // Autocomplete State for Customers
+            customerSearchQuery: '',
+            selectedCustomer: null,
+            showCustomerSuggestions: false,
+            statusTimeout: null,
+            
+            // Autocomplete State for Items
+            itemSearchQuery: '',
+            selectedItem: null,
+            showItemSuggestions: false,
+
+            // Sales Order state
+            salesOrderId: null,
+            orderItems: [],
+            statusMessage: '',
+            isCreatingOrder: false,
+            
+            // Data for the new item form
+            newItem: {
+                quantity: 1,
+                price: 0
+            },
+            
+            
+            get filteredItems() {
+                if (this.itemSearchQuery === '') return this.items;
+                return this.items.filter(item => 
+                    item.description.toLowerCase().includes(this.itemSearchQuery.toLowerCase()) ||
+                    item.sku.toLowerCase().includes(this.itemSearchQuery.toLowerCase())
+                );
+            },
+            get total() {
+                return this.orderItems.reduce((sum, item) => sum + (item.quantity * item.price), 0);
+            },
+            init() {
+                const params = new URLSearchParams(window.location.search);
+                const orderId = params.get('salesOrderId');
+                if (orderId) {
+                    this.salesOrderId = orderId;
+                    this.loadSalesOrder(orderId);
+                }
+            },
+            
+            loadSalesOrder(orderId) {
+                this.showStatusMessage(`Loading Sales Order #${orderId}...`);
+
+                fetch(`${getSalesOrderEndpoint}?salesOrderId=${orderId}`)
+                    .then(response => {
+                        if (response.ok) {
+                            return response.json();
+                        } else {
+                            this.showStatusMessage(`Failed to load sales order: ${response.statusText}`, 5000);
+                            throw new Error('Failed to load order');
+                        }
+                    })
+                    .then(data => {
+                        this.selectedCustomer = data.customer;
+                        this.orderItems = data.items;
+                        this.showStatusMessage(`Sales Order #${orderId} loaded successfully!`);
+                    })
+                    .catch(err => {
+                        this.showStatusMessage(err.message, 5000);
+                        console.error(err);
+                    });
+            },
+            searchItems() {
+                if (this.itemSearchQuery.length < 3) return;
+                fetch(`${searchItemEndpoint}?searchQuery=${this.itemSearchQuery}`)
+                    .then(response => response.json())
+                    .then(items => this.items = items)
+            },
+            searchCustomers() {
+                if (this.customerSearchQuery.length < 3) return;
+                fetch(`${searchCustomersEndpoint}?searchQuery=${this.customerSearchQuery}`)
+                    .then(response => response.json())
+                    .then(customers => this.customers = customers)
+            },
+            selectCustomer(customer) {
+                this.selectedCustomer = customer;
+                this.customerSearchQuery = `${customer.companyName} (${customer.givenName} ${customer.surname})`;
+                this.showCustomerSuggestions = false;
+            },
+            hideCustomerSuggestions() {
+                setTimeout(() => {
+                    this.showCustomerSuggestions = false;
+                }, 200);
+            },
+            selectItem(item) {
+                this.selectedItem = item;
+                this.itemSearchQuery = item.description;
+                this.showItemSuggestions = false;
+            },
+            hideItemSuggestions() {
+                 setTimeout(() => {
+                    this.showItemSuggestions = false;
+                }, 200);
+            },
+            showStatusMessage(message, duration = 3000) {
+                this.statusMessage = message;
+                clearTimeout(this.statusTimeout);
+                this.statusTimeout = setTimeout(() => {
+                    this.statusMessage = '';
+                }, duration);
+            },
+            createSalesOrder() {
+                if (!this.selectedCustomer) {
+                    this.showStatusMessage('Please select a customer.');
+                    return;
+                }
+                this.isCreatingOrder = true;
+                this.showStatusMessage('Creating sales order...');
+                fetch(createSalesOrderEndpoint, {
+                    method: "POST",
+                    headers: {
+                        "content-type" : "application/json"
+                    },
+                    body: JSON.stringify({ customerId: this.selectedCustomer.contactId})
+                }).then(response =>{
+                    switch (response.status) {
+                        case 200:
+                            response.json().then(salesOrderId =>{
+                                this.salesOrderId = salesOrderId;
+                                this.showStatusMessage("Sales order created successfully!");
+                                const newUrl = new URL(window.location.href);
+                                newUrl.searchParams.set('salesOrderId', salesOrderId);
+                                window.history.pushState({}, '', newUrl);
+                            });
+                            break;
+                        case 400:
+                            response.text().then(text =>{
+                                this.showStatusMessage(text);
+                            });
+                            break;
+                        default:
+                            this.showStatusMessage("Something happened?!");
+                            break;
+                    }
+                }).catch(err => {
+                    this.showStatusMessage(err);
+                }).finally(() => {
+                    this.isCreatingOrder = false;
+                })
+            },
+            addOrderItem() {
+                // TBC
+            },
+            removeOrderItem(orderItemId) {
+                // TBC
+            },
+        }).mount("#SalesOrderApp")
+    </script>
+}

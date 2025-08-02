@@ -13,13 +13,13 @@ nupkg/
 
 # Rider
 .idea
-
+[Ll]ib
 # User-specific files
 *.suo
 *.user
 *.userosscache
 *.sln.docstates
-
+**/*.sqlite*
 # Build results
 [Dd]ebug/
 [Dd]ebugPublic/
