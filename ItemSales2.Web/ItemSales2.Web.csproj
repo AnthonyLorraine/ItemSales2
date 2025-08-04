@@ -5,75 +5,24 @@
         <Nullable>enable</Nullable>
         <ImplicitUsings>enable</ImplicitUsings>
     </PropertyGroup>
-
+    
     <ItemGroup>
-      <PackageReference Include="Microsoft.EntityFrameworkCore" />
-      <PackageReference Include="Microsoft.EntityFrameworkCore.Design">
-        <PrivateAssets>all</PrivateAssets>
-        <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-      </PackageReference>
-      <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" />
-      <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" />
-      <PackageReference Include="Microsoft.Web.LibraryManager.Build" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore"/>
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Design">
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
+        <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory"/>
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite"/>
+        <PackageReference Include="Microsoft.Web.LibraryManager.Build"/>
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Common\" />
-      <Folder Include="Features\" />
+        <Folder Include="Features\"/>
     </ItemGroup>
 
     <ItemGroup>
-      <AdditionalFiles Include="Shared\_Layout.cshtml" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <_ContentIncludedByDefault Remove="wwwroot\lib\jquery\dist\jquery.js" />
-      <_ContentIncludedByDefault Remove="wwwroot\lib\jquery\dist\jquery.min.js" />
-      <_ContentIncludedByDefault Remove="wwwroot\lib\jquery\dist\jquery.min.map" />
-      <_ContentIncludedByDefault Remove="wwwroot\lib\jquery\LICENSE.txt" />
-      <_ContentIncludedByDefault Remove="wwwroot\lib\tailwind\dist\chunk-4WXWQT6Y.mjs" />
-      <_ContentIncludedByDefault Remove="wwwroot\lib\tailwind\dist\chunk-G32FJCSR.mjs" />
-      <_ContentIncludedByDefault Remove="wwwroot\lib\tailwind\dist\chunk-HTB5LLOP.mjs" />
-      <_ContentIncludedByDefault Remove="wwwroot\lib\tailwind\dist\colors-b_6i0Oi7.d.ts" />
-      <_ContentIncludedByDefault Remove="wwwroot\lib\tailwind\dist\colors.d.mts" />
-      <_ContentIncludedByDefault Remove="wwwroot\lib\tailwind\dist\colors.d.ts" />
-      <_ContentIncludedByDefault Remove="wwwroot\lib\tailwind\dist\colors.js" />
-      <_ContentIncludedByDefault Remove="wwwroot\lib\tailwind\dist\colors.min.js" />
-      <_ContentIncludedByDefault Remove="wwwroot\lib\tailwind\dist\colors.mjs" />
-      <_ContentIncludedByDefault Remove="wwwroot\lib\tailwind\dist\default-theme.d.mts" />
-      <_ContentIncludedByDefault Remove="wwwroot\lib\tailwind\dist\default-theme.d.ts" />
-      <_ContentIncludedByDefault Remove="wwwroot\lib\tailwind\dist\default-theme.js" />
-      <_ContentIncludedByDefault Remove="wwwroot\lib\tailwind\dist\default-theme.min.js" />
-      <_ContentIncludedByDefault Remove="wwwroot\lib\tailwind\dist\default-theme.mjs" />
-      <_ContentIncludedByDefault Remove="wwwroot\lib\tailwind\dist\flatten-color-palette.d.mts" />
-      <_ContentIncludedByDefault Remove="wwwroot\lib\tailwind\dist\flatten-color-palette.d.ts" />
-      <_ContentIncludedByDefault Remove="wwwroot\lib\tailwind\dist\flatten-color-palette.js" />
-      <_ContentIncludedByDefault Remove="wwwroot\lib\tailwind\dist\flatten-color-palette.min.js" />
-      <_ContentIncludedByDefault Remove="wwwroot\lib\tailwind\dist\flatten-color-palette.mjs" />
-      <_ContentIncludedByDefault Remove="wwwroot\lib\tailwind\dist\lib.d.mts" />
-      <_ContentIncludedByDefault Remove="wwwroot\lib\tailwind\dist\lib.d.ts" />
-      <_ContentIncludedByDefault Remove="wwwroot\lib\tailwind\dist\lib.js" />
-      <_ContentIncludedByDefault Remove="wwwroot\lib\tailwind\dist\lib.min.js" />
-      <_ContentIncludedByDefault Remove="wwwroot\lib\tailwind\dist\lib.mjs" />
-      <_ContentIncludedByDefault Remove="wwwroot\lib\tailwind\dist\plugin.d.mts" />
-      <_ContentIncludedByDefault Remove="wwwroot\lib\tailwind\dist\plugin.d.ts" />
-      <_ContentIncludedByDefault Remove="wwwroot\lib\tailwind\dist\plugin.js" />
-      <_ContentIncludedByDefault Remove="wwwroot\lib\tailwind\dist\plugin.min.js" />
-      <_ContentIncludedByDefault Remove="wwwroot\lib\tailwind\dist\plugin.mjs" />
-      <_ContentIncludedByDefault Remove="wwwroot\lib\tailwind\dist\resolve-config-BIFUA2FY.d.ts" />
-      <_ContentIncludedByDefault Remove="wwwroot\lib\tailwind\dist\resolve-config-QUZ9b-Gn.d.mts" />
-      <_ContentIncludedByDefault Remove="wwwroot\lib\tailwind\dist\types-B254mqw1.d.mts" />
-      <_ContentIncludedByDefault Remove="wwwroot\lib\tailwind\index.css" />
-      <_ContentIncludedByDefault Remove="wwwroot\lib\tailwind\index.min.css" />
-      <_ContentIncludedByDefault Remove="wwwroot\lib\tailwind\LICENSE" />
-      <_ContentIncludedByDefault Remove="wwwroot\lib\tailwind\package.json" />
-      <_ContentIncludedByDefault Remove="wwwroot\lib\tailwind\preflight.css" />
-      <_ContentIncludedByDefault Remove="wwwroot\lib\tailwind\preflight.min.css" />
-      <_ContentIncludedByDefault Remove="wwwroot\lib\tailwind\README.md" />
-      <_ContentIncludedByDefault Remove="wwwroot\lib\tailwind\theme.css" />
-      <_ContentIncludedByDefault Remove="wwwroot\lib\tailwind\theme.min.css" />
-      <_ContentIncludedByDefault Remove="wwwroot\lib\tailwind\utilities.css" />
-      <_ContentIncludedByDefault Remove="wwwroot\lib\tailwind\utilities.min.css" />
+        <AdditionalFiles Include="Shared\_Layout.cshtml"/>
     </ItemGroup>
 
 </Project>

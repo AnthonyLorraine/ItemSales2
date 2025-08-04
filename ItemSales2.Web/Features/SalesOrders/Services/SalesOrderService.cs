@@ -74,6 +74,34 @@ public class SalesOrderService
 
         return itemModels.ToDto();
     }
+
+    public async Task<SalesOrderDto> GetSalesOrderById(int salesOrderId, CancellationToken ct)
+    {
+        var salesOrder = await _dbContext.SalesOrders
+            .Include(so => so.Customer)
+            .ThenInclude(c => c.Pricing)
+            .ThenInclude(p => p.Matrix)
+            .Include(so => so.Items)
+            .FirstAsync(so => so.SalesOrderId == salesOrderId, ct);
+
+        return salesOrder.ToDto();
+    }
+}
+
+public class SalesOrderDto
+{
+    public int SalesOrderId { get; set; }
+    public ContactSearchResponseDto Customer { get; set; } = null!;
+    public List<SalesOrderItemResponseDto> Items { get; set; } = [];
+}
+
+public class SalesOrderItemResponseDto
+{
+    public int ItemId { get; set; }
+    public string Sku { get; set; } = null!;
+    public string? Description { get; set; }
+    public decimal Price { get; set; }
+    public int Quantity { get; set; }
 }
 
 public class ItemSearchResponseDto

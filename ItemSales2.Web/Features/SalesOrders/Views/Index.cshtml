@@ -3,8 +3,8 @@
     ViewData["Title"] = "Sales Order";
 }
 
-<div id="SalesOrderApp" class="p-6 bg-white-50">
-
+<div id="SalesOrderApp" class="p-6 bg-white-50" @@vue:mounted="mounted">
+    
     <h1 class="text-3xl font-bold text-gray-800 mb-6">Create Sales Order</h1>
 
     <p v-if="statusMessage !== ''" class="fixed top-4 right-4 z-50 mb-4 p-3 rounded-md border border-green-400 bg-green-100 text-sm text-green-700 font-medium transition-opacity duration-300">
@@ -19,7 +19,6 @@
                 id="customer-search"
                 type="text"
                 v-model="customerSearchQuery"
-                v-on:focus="showCustomerSuggestions = true"
                 v-on:blur="hideCustomerSuggestions()"
                 :input="searchCustomers()"
                 class="flex-grow p-2 border rounded-md focus:ring-blue-500 focus:border-blue-500"
@@ -53,10 +52,11 @@
 
         <div class="bg-white shadow-md rounded-lg overflow-hidden mb-6">
             <h2 class="text-2xl font-semibold text-gray-700 p-6 border-b">Order Summary</h2>
-            <table class="min-w-full divide-y divide-gray-200">
+            <table class="min-w-full divide-y divide-gray-200 relative">
                 <thead class="bg-gray-50">
                 <tr>
                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Item</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Description</th>
                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Quantity</th>
                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Price</th>
                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Subtotal</th>
@@ -65,6 +65,7 @@
                 </thead>
                 <tbody class="bg-white divide-y divide-gray-200">
                 <tr v-for="item in orderItems" :key="item.orderItemId">
+                    <td class="px-6 py-4 whitespace-nowrap">{{ item.sku }}</td>
                     <td class="px-6 py-4 whitespace-nowrap">{{ item.description }}</td>
                     <td class="px-6 py-4 whitespace-nowrap">{{ item.quantity }}</td>
                     <td class="px-6 py-4 whitespace-nowrap">${{ item.price.toFixed(2) }}</td>
@@ -76,6 +77,45 @@
                 <tr v-if="orderItems.length === 0">
                     <td colspan="5" class="px-6 py-4 text-center text-gray-500">No items added yet.</td>
                 </tr>
+                <tr>
+                    <td>
+                        <div>
+                            <input
+                                id="item-search"
+                                type="text"
+                                v-model="itemSearchQuery"
+                                v-on:focus="showItemSuggestions = true"
+                                v-on:blur="hideItemSuggestions()"
+                                v-on:input="searchItems()"
+                                class=""
+                                :placeholder="selectedItem ? selectedItem.description : 'Search for an item...'"
+                            >
+                            <ul v-show="showItemSuggestions" class="absolute z-1000 top-full mt-1 w-full bg-white border border-gray-300 rounded-md shadow-lg max-h-60 overflow-y-auto">
+                                <li v-for="item in items" 
+                                    v-on:mousedown="selectItem(item)" 
+                                    class="p-2 cursor-pointer hover:bg-blue-100"
+                                >
+                                    {{ item.description }} ({{ item.sku }})
+                                </li>
+                                <li v-if="items.length === 0" class="p-2 text-gray-500">No items found.</li>
+                            </ul>
+                        </div>
+                    </td>
+                    <td>
+                        ?
+                    </td>
+                    <td>
+                        <input type="number" id="quantity" v-model.number="newItem.quantity" min="1" class="">
+                    </td>
+                    <td>
+                        <input type="number" id="price" v-model.number="newItem.price" min="0.01" step="0.01" class="">
+                    </td>
+                    <td>
+                        <button v-on:click="addOrderItem" :disabled="!selectedItem || newItem.quantity <= 0 || newItem.price <= 0" class="w-full bg-green-600 text-white px-6 py-2 rounded-md hover:bg-green-700 disabled:opacity-50">
+                            Add Item
+                        </button>
+                    </td>
+                </tr>
                 </tbody>
                 <tfoot v-if="orderItems.length > 0">
                     <tr class="bg-gray-50">
@@ -85,53 +125,13 @@
                 </tfoot>
             </table>
         </div>
-
-        <div class="bg-white shadow-md rounded-lg p-6">
-            <h2 class="text-2xl font-semibold text-gray-700 mb-4">Add Order Item</h2>
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
-                <div class="relative">
-                    <label for="item-search" class="block text-gray-600">Item</label>
-                    <input 
-                        id="item-search"
-                        type="text" 
-                        v-model="itemSearchQuery" 
-                        v-on:focus="showItemSuggestions = true"
-                        v-on:blur="hideItemSuggestions()"
-                        v-on:input="searchItems()"
-                        class="w-full p-2 border rounded-md focus:ring-blue-500 focus:border-blue-500"
-                        :placeholder="selectedItem ? selectedItem.description : 'Search for an item...'"
-                    >
-                    <ul v-show="showItemSuggestions" class="absolute z-10 top-full mt-1 w-full bg-white border border-gray-300 rounded-md shadow-lg max-h-60 overflow-y-auto">
-                        <li v-for="item in items" 
-                            v-on:mousedown="selectItem(item)" 
-                            class="p-2 cursor-pointer hover:bg-blue-100"
-                        >
-                            {{ item.description }} ({{ item.sku }})
-                        </li>
-                        <li v-if="items.length === 0" class="p-2 text-gray-500">No items found.</li>
-                    </ul>
-                </div>
-                <div>
-                    <label for="quantity" class="block text-gray-600">Quantity</label>
-                    <input type="number" id="quantity" v-model.number="newItem.quantity" min="1" class="w-full p-2 border rounded-md focus:ring-blue-500 focus:border-blue-500">
-                </div>
-                <div>
-                    <label for="price" class="block text-gray-600">Price ($)</label>
-                    <input type="number" id="price" v-model.number="newItem.price" min="0.01" step="0.01" class="w-full p-2 border rounded-md focus:ring-blue-500 focus:border-blue-500">
-                </div>
-                <div class="md:col-span-1">
-                    <button v-on:click="addOrderItem" :disabled="!selectedItem || newItem.quantity <= 0 || newItem.price <= 0" class="w-full bg-green-600 text-white px-6 py-2 rounded-md hover:bg-green-700 disabled:opacity-50">
-                        Add Item
-                    </button>
-                </div>
-            </div>
-        </div>
     </div>
 </div>
 
 @section Scripts
 {
     <script>
+        
         const createSalesOrderEndpoint = `@Html.Raw(Url.ActionLink("Create", "SalesOrder"))`;
         const searchCustomersEndpoint = `@Html.Raw(Url.ActionLink("SearchCustomers", "SalesOrder"))`
         const getSalesOrderEndpoint = `@Html.Raw(Url.Action("GetSalesOrder", "SalesOrder"))`;
@@ -144,8 +144,8 @@
         // Include salesOrder in the dto for removing item, to ensure it relates to this order.
         // SalesOrder status, to prevent items being added or removed from finalised orders.
         // price matrix for sales items
-        // customer pricing level
-        
+        // customer     pricing level
+
         PetiteVue.createApp({
             customers: [],
             items: [],
@@ -188,11 +188,12 @@
                 const params = new URLSearchParams(window.location.search);
                 const orderId = params.get('salesOrderId');
                 if (orderId) {
-                    this.salesOrderId = orderId;
                     this.loadSalesOrder(orderId);
                 }
             },
-            
+            mounted(){
+                this.init();
+            },
             loadSalesOrder(orderId) {
                 this.showStatusMessage(`Loading Sales Order #${orderId}...`);
 
@@ -208,6 +209,7 @@
                     .then(data => {
                         this.selectedCustomer = data.customer;
                         this.orderItems = data.items;
+                        this.salesOrderId = data.salesOrderId;
                         this.showStatusMessage(`Sales Order #${orderId} loaded successfully!`);
                     })
                     .catch(err => {
@@ -222,15 +224,20 @@
                     .then(items => this.items = items)
             },
             searchCustomers() {
-                if (this.customerSearchQuery.length < 3) return;
+                if (this.customerSearchQuery.length < 3) {
+                    this.showCustomerSuggestions = false;
+                    return;
+                }
+                
                 fetch(`${searchCustomersEndpoint}?searchQuery=${this.customerSearchQuery}`)
                     .then(response => response.json())
                     .then(customers => this.customers = customers)
+                    .then(() => this.showCustomerSuggestions = true);
             },
             selectCustomer(customer) {
+                this.showCustomerSuggestions = false;
                 this.selectedCustomer = customer;
                 this.customerSearchQuery = `${customer.companyName} (${customer.givenName} ${customer.surname})`;
-                this.showCustomerSuggestions = false;
             },
             hideCustomerSuggestions() {
                 setTimeout(() => {

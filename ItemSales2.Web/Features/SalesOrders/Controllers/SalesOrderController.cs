@@ -35,9 +35,10 @@ public class SalesOrderController : Controller
         return Json(customers);
     }
 
-    public IActionResult GetSalesOrder()
+    public async Task<IActionResult> GetSalesOrder(int salesOrderId, CancellationToken ct)
     {
-        throw new NotImplementedException();
+        var salesOrder = await _orderService.GetSalesOrderById(salesOrderId, ct); 
+        return Json(salesOrder);
     }
 
     public IActionResult AddOrderItem()

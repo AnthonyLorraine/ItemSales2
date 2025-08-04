@@ -15,5 +15,7 @@ public class SalesOrderContext : DbContext
     public DbSet<OrderItemModel> OrderItems { get; set; }
     public DbSet<ItemModel> Items { get; set; }
     public DbSet<ContactModel> Contacts { get; set; }
+    public DbSet<PricingMatrixModel> PricingMatrix { get; set; }
+    public DbSet<PricingModel> Pricing { get; set; }
     
 }

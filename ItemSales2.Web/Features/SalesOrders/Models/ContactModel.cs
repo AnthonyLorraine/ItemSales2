@@ -11,4 +11,6 @@ public class ContactModel
     public string? CompanyName { get; set; }
     public string? PrimaryNumber { get; set; }
     public string? EmailAddress { get; set; }
+    public int PricingId { get; set; }
+    public PricingModel Pricing { get; set; } = null!;
 }
